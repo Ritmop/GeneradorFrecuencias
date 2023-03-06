@@ -45,6 +45,7 @@ btnkHz	    EQU	7	;Button set frequency to
 PSECT udata_bank0 ;common memory
     freq_digit:	DS  4	;Thousands(+3), Hundreads(+2), Tens(+1) & Ones(0) digits in binary
     wave_ctrl:	DS  1	;Waveform controler
+    wave_count:	DS  1	;Wave counter
     TMR0_n:	DS  1	;TMR0 variable N value (frequency control)
     
 PSECT udata_shr	;common memory
@@ -108,7 +109,7 @@ ORG 0004h    ;posición para las interrupciones
 	movf	TMR0_n, W   ;reset TRM0 count
 	movwf	TMR0
 	bcf	T0IF	    ;Reset TMR0 overflow flag
-	bsf	wave_ctrl, 7	;Next step of waveform
+	bsf	wave_ctrl, 4	;Next step of waveform
 	;Change selected display
 ;	incf	disp_sel
 	movf	TMR0_n
@@ -220,14 +221,14 @@ display7_table:
     ;*****Funtion Generator*****
     waveform_select:
 	;Add a calculator for selector Calculate
-	bsf wave_ctrl,  0   ;square
+	bcf wave_ctrl,  0   ;square
 	bcf wave_ctrl,  1   ;sawtooth
-	bcf wave_ctrl,  2   ;triangle
+	bsf wave_ctrl,  2   ;triangle
 	bcf wave_ctrl,  3   ;sine
     return
     
     create_waveform:
-	btfss	wave_ctrl, 7	;Waveform next step requested
+	btfss	wave_ctrl, 4	;Waveform next step requested
 	return	;Return if not requested
 	;Check selected waveform
 	btfsc	wave_ctrl,  0
@@ -237,19 +238,41 @@ display7_table:
 	btfsc	wave_ctrl,  2
 	call	triangle_wave
 	
-	bcf	wave_ctrl, 7	;Waveform step compleated
+	bcf	wave_ctrl, 4	;Waveform step compleated
     return
     
-    square_wave:	
-	incf	PORTA	
+    square_wave:
+	incf	wave_count, F
+	movf	wave_count, W
+	sublw	128	    ;Compare counter at half period
+	btfss	STATUS,	0   ;Check ~Borrow flag
+	goto	$+4	;Skip set
+	movlw	255	;Set to HIGH on first half
+	movwf	PORTA	;
+	return		
+	clrf	PORTA	;Reset to LOW on second half
     return
     
     sawtooth_wave:	
 	incf	PORTA	
     return
     
-    triangle_wave:	
-	incf	PORTA	
+    triangle_wave:
+	bcf	wave_ctrl,  5
+	incf	wave_count, F
+	movf	wave_count, W
+	sublw	127
+	btfsc	STATUS,	0   ;Check ~Borrow flag
+	bsf	wave_ctrl,  5
+	
+	;Set/Reset value
+	btfsc	wave_ctrl,  5
+	goto	$+4	;goto decrement
+	incf	PORTA	;Increment by 2
+	incf	PORTA	;
+	return		;
+	decf	PORTA	;Decrement by 2
+	decf	PORTA	;
     return
     
     
