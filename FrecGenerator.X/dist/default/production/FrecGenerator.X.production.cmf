@@ -13,7 +13,7 @@
 %PSECTS
 $build/default/production/GeneradorFunciones.o
 resVect CODE 0 0 0 3 2 1
-code CODE 0 0 0 171 2 1
+code CODE 0 0 0 177 2 1
 intVect CODE 0 0 0 25 2 1
 udata_bank0 BANK0 1 20 20 7 1 1
 udata_shr COMMON 1 70 70 2 1 1
@@ -32,14 +32,14 @@ BANK0 27-6F 1
 BANK1 A0-EF 1
 BANK2 110-16F 1
 BANK3 190-1EF 1
-CONST 171-1FFF 2
-ENTRY 171-1FFF 2
+CONST 177-1FFF 2
+ENTRY 177-1FFF 2
 IDLOC 2000-2003 2
-CODE 171-1FFF 2
+CODE 177-1FFF 2
 COMMON 72-7F 1
 EEDATA 2100-21FF 2
-STRCODE 171-1FFF 2
-STRING 171-1FFF 2
+STRCODE 177-1FFF 2
+STRING 177-1FFF 2
 # %LINETAB Section
 # This section enumerates the file/line to address mappings.
 # The beginning of the section is indicated by %LINETAB.
@@ -162,22 +162,22 @@ F intVect CODE >80:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Pr
 147 code CODE >217:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 148 code CODE >218:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 149 code CODE >219:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-14A code CODE >224:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+14A code CODE >220:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 14B code CODE >225:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 14C code CODE >226:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 14D code CODE >227:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 14E code CODE >228:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-14F code CODE >231:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+14F code CODE >229:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 150 code CODE >232:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-151 code CODE >234:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+151 code CODE >233:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 152 code CODE >235:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 153 code CODE >236:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 154 code CODE >237:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 155 code CODE >238:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 156 code CODE >239:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-157 code CODE >241:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+157 code CODE >240:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 158 code CODE >242:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-159 code CODE >245:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+159 code CODE >243:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 15A code CODE >246:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 15B code CODE >247:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 15C code CODE >248:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
@@ -187,20 +187,26 @@ F intVect CODE >80:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Pr
 160 code CODE >252:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 161 code CODE >253:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 162 code CODE >254:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-163 code CODE >257:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+163 code CODE >255:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 164 code CODE >258:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-165 code CODE >261:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+165 code CODE >259:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 166 code CODE >262:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 167 code CODE >263:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 168 code CODE >264:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 169 code CODE >265:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 16A code CODE >266:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-16B code CODE >269:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-16C code CODE >270:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-16D code CODE >271:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-16E code CODE >273:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-16F code CODE >274:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
-170 code CODE >276:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+16B code CODE >267:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+16C code CODE >268:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+16D code CODE >269:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+16E code CODE >270:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+16F code CODE >271:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+170 code CODE >273:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+171 code CODE >274:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+172 code CODE >275:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+173 code CODE >276:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+174 code CODE >277:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+175 code CODE >278:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
+176 code CODE >279:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -213,7 +219,7 @@ F intVect CODE >80:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Pr
 # was defined in a psect then <psect> will be "-". File-name
 # is the name of the object file in which the symbol was defined.
 %SYMTAB
-__Hspace_0 171 0 ABS 0 - -
+__Hspace_0 177 0 ABS 0 - -
 __Hspace_1 72 0 ABS 0 - -
 __Hspace_3 0 0 ABS 0 - -
 __Hspace_4 4010 0 ABS 0 - -

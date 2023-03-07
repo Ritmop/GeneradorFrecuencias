@@ -10,12 +10,12 @@
  Intel Hex-file ranges:
   0h - 5h		(dist/default/production\FrecGenerator.X.production.hex)
   8h - 49h		(dist/default/production\FrecGenerator.X.production.hex)
-  200h - 2E1h		(dist/default/production\FrecGenerator.X.production.hex)
+  200h - 2EDh		(dist/default/production\FrecGenerator.X.production.hex)
   400Eh - 4011h		(dist/default/production\FrecGenerator.X.production.hex)
  Unused ranges:
   6h - 7h
   4Ah - 1FFh
-  2E2h - 400Dh
+  2EEh - 400Dh
 
 ### Hex Memory Map ###
  Legend:
@@ -44,7 +44,7 @@
 000002B0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 000002C0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 000002D0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-000002E0 | H1 H1 -- -- -- -- -- -- -- -- -- -- -- -- -- --
+000002E0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 -- --
 ----------------------------------------------------------
 00004000 | -- -- -- -- -- -- -- -- -- -- -- -- -- -- H1 H1
 00004010 | H1 H1 -- -- -- -- -- -- -- -- -- -- -- -- -- --

@@ -216,14 +216,15 @@ display7_table:
 	clrf	PORTD
 	clrf	PORTE
 	clrw
+	bsf	wave_ctrl,  5	;Start increase
     return
     
     ;*****Funtion Generator*****
     waveform_select:
 	;Add a calculator for selector Calculate
-	bcf wave_ctrl,  0   ;square
+	bsf wave_ctrl,  0   ;square
 	bcf wave_ctrl,  1   ;sawtooth
-	bsf wave_ctrl,  2   ;triangle
+	bcf wave_ctrl,  2   ;triangle
 	bcf wave_ctrl,  3   ;sine
     return
     
@@ -258,21 +259,23 @@ display7_table:
     return
     
     triangle_wave:
-	bcf	wave_ctrl,  5
-	incf	wave_count, F
-	movf	wave_count, W
-	sublw	127
-	btfsc	STATUS,	0   ;Check ~Borrow flag
-	bsf	wave_ctrl,  5
-	
-	;Set/Reset value
-	btfsc	wave_ctrl,  5
-	goto	$+4	;goto decrement
-	incf	PORTA	;Increment by 2
-	incf	PORTA	;
-	return		;
-	decf	PORTA	;Decrement by 2
-	decf	PORTA	;
+	btfss	wave_ctrl,  5	;Check increase
+	goto	$+9	;Jump to decrease
+	incf	PORTA
+	incf	PORTA, W
+	btfsc	STATUS,	2 ;Check Zero flag, if zero dont store inc and start decrease, no zero store
+	goto	$+3	    ;Skip inc and start decrease
+	movwf	PORTA	;Store increment
+	return
+	bcf	wave_ctrl,  5	;Start decrease
+	return	
+		
+	decf	PORTA
+	btfsc	STATUS,	2 ;Check Zero flag
+	goto	$+3
+	decf	PORTA	;dectement again
+	return
+	bsf	wave_ctrl,  5	;Start increase
     return
     
     
