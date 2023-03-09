@@ -1,1 +1,2 @@
-build/default/production\GeneradorFunciones.i: GeneradorFunciones.s
+build/default/production\GeneradorFunciones.i: GeneradorFunciones.s \
+  macros.s

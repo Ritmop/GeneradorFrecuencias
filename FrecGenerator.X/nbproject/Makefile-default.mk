@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=GeneradorFunciones.s
+SOURCEFILES_QUOTED_IF_SPACED=GeneradorFunciones.s macros.s
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/GeneradorFunciones.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/GeneradorFunciones.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/GeneradorFunciones.o ${OBJECTDIR}/macros.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/GeneradorFunciones.o.d ${OBJECTDIR}/macros.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/GeneradorFunciones.o
+OBJECTFILES=${OBJECTDIR}/GeneradorFunciones.o ${OBJECTDIR}/macros.o
 
 # Source Files
-SOURCEFILES=GeneradorFunciones.s
+SOURCEFILES=GeneradorFunciones.s macros.s
 
 
 
@@ -97,6 +97,14 @@ ${OBJECTDIR}/GeneradorFunciones.o: GeneradorFunciones.s  nbproject/Makefile-${CN
 	GeneradorFunciones.s \
 	 -D__DEBUG=1   -mdfp="${DFP_DIR}/xc8"  -msummary=+mem,-psect,-class,-hex,-file,-sha1,-sha256,-xml,-xmlfull -fmax-errors=20 -mwarn=0 -xassembler-with-cpp
 	
+${OBJECTDIR}/macros.o: macros.s  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/macros.o 
+	${MP_AS} -mcpu=PIC16F887 -c \
+	-o ${OBJECTDIR}/macros.o \
+	macros.s \
+	 -D__DEBUG=1   -mdfp="${DFP_DIR}/xc8"  -msummary=+mem,-psect,-class,-hex,-file,-sha1,-sha256,-xml,-xmlfull -fmax-errors=20 -mwarn=0 -xassembler-with-cpp
+	
 else
 ${OBJECTDIR}/GeneradorFunciones.o: GeneradorFunciones.s  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}" 
@@ -104,6 +112,14 @@ ${OBJECTDIR}/GeneradorFunciones.o: GeneradorFunciones.s  nbproject/Makefile-${CN
 	${MP_AS} -mcpu=PIC16F887 -c \
 	-o ${OBJECTDIR}/GeneradorFunciones.o \
 	GeneradorFunciones.s \
+	  -mdfp="${DFP_DIR}/xc8"  -msummary=+mem,-psect,-class,-hex,-file,-sha1,-sha256,-xml,-xmlfull -fmax-errors=20 -mwarn=0 -xassembler-with-cpp
+	
+${OBJECTDIR}/macros.o: macros.s  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/macros.o 
+	${MP_AS} -mcpu=PIC16F887 -c \
+	-o ${OBJECTDIR}/macros.o \
+	macros.s \
 	  -mdfp="${DFP_DIR}/xc8"  -msummary=+mem,-psect,-class,-hex,-file,-sha1,-sha256,-xml,-xmlfull -fmax-errors=20 -mwarn=0 -xassembler-with-cpp
 	
 endif

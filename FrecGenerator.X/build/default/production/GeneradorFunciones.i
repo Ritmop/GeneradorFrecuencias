@@ -2465,7 +2465,44 @@ auto_size SET 0
 ENDM
 # 8 "C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/PIC16Fxxx_DFP/1.3.42/xc8\\pic\\include\\xc.inc" 2 3
 # 20 "GeneradorFunciones.s" 2
-; #include "macros.s"
+# 1 "./macros.s" 1
+bin_to_dec macro binary,decimal_digit
+    ;Long division altorithm - https:
+    ;Initialize values
+    movf binary, W
+    movwf count_val
+    clrf mod10
+    movlw 8
+    movwf rotations
+    bcf STATUS, 0 ;Clear carry bit
+
+    ;long div
+    ;rotate count_val into mod10
+    rlf count_val, F
+    rlf mod10, F
+    ;mod10 - 10
+    movlw 10
+    subwf mod10, W
+    ;Check ~borrow flag
+    btfss STATUS, 0
+    goto $+2 ;if borrow, goto skip result
+    movwf mod10
+    ;skip result
+    decfsz rotations, F;Decrement rotations left
+    goto $-8 ;If rotations left, goto long div (loop)
+    ;Store decimal digit
+    movf mod10, W
+    movwf decimal_digit
+    ;Final rotate to prepare next digit
+    rlf count_val, F
+endm
+
+display7_decode macro binary, decode
+   movf binary, W
+   call display7_table ;Returns binary code for 7 segment display
+   movwf decode
+endm
+# 21 "GeneradorFunciones.s" 2
 
 ;configuration word 1
     CONFIG FOSC = INTRC_NOCLKOUT
@@ -2487,14 +2524,29 @@ ENDM
 ;---------------------------------- Variables ----------------------------------
 btnFrecUp EQU 0 ;Button increase frequency
 btnFrecDwn EQU 2 ;Button decrease frequency
-btnHz EQU 5 ;Button set frequency to Hz
-btnkHz EQU 7 ;Button set frequency to
+btnHz EQU 4 ;Button set frequency to Hz
+btnkHz EQU 6 ;Button set frequency to kHz
+btnWave EQU 7 ;Button Change Waveform
+
+disp0en EQU 0 ;Display 0 enable ((EECON1) and 07Fh), 0 pin
+disp1en EQU 1 ;Display 1 enable ((EECON1) and 07Fh), 0 pin
+disp2en EQU 2 ;Display 2 enable ((EECON1) and 07Fh), 0 pin
+disp3en EQU 3 ;Display 3 enable ((EECON1) and 07Fh), 0 pin
 
 PSECT udata_bank0 ;common memory
-    freq_digit: DS 4 ;Thousands(+3), Hundreads(+2), Tens(+1) & Ones(0) digits in binary
+    ;Wave variables
     wave_ctrl: DS 1 ;Waveform controler
     wave_count: DS 1 ;Wave counter
+    wave_sel: DS 1 ;Waveform Selector
+    ;Frequency variables
     TMR0_n: DS 1 ;TMR0 variable N value (frequency control)
+    freq_dig: DS 4 ;Thousands (+3), Hundreads(+2), Tens(+1) & Ones(0) digits in binary
+    disp_out: DS 4 ;Thousands (+3), Hundreads(+2), Tens(+1) & Ones(0) display output
+    disp_sel: DS 1 ;Display selector (LSB only)
+    ;Macros variables
+    count_val: DS 1 ;Store counters value
+    mod10: DS 1 ;Module 10 for binary to decimal convertion
+    rotations: DS 1 ;Rotations counter for binary to decimal convertion
 
 PSECT udata_shr ;common memory
     W_temp: DS 1 ;Temporary W
@@ -2542,6 +2594,13 @@ ORG 0004h ;posición para las interrupciones
  subwf TMR0_n, F
  goto reset_RBIF ;Skip following buttons
 
+ btfsc PORTB, btnWave
+ goto $+5 ;Check next button
+ incf wave_sel, F
+ clrf PORTA ;Reset to avoid waveform flaws
+ bsf wave_ctrl, 5 ;Start increase
+ goto reset_RBIF ;Skip following buttons
+
  ;btfss PORTB, btnHz
  ;decf PORTA
 
@@ -2558,10 +2617,6 @@ ORG 0004h ;posición para las interrupciones
  movwf TMR0
  bcf ((INTCON) and 07Fh), 2 ;Reset TMR0 overflow flag
  bsf wave_ctrl, 4 ;Next step of waveform
- ;Change selected display
-; incf disp_sel
- movf TMR0_n
- movwf PORTD
     return
 
 ;------------------------------------ Tablas -----------------------------------
@@ -2603,6 +2658,12 @@ display7_table:
     loop:
  call waveform_select
  call create_waveform
+
+ call get_digits ;Get frequency's value in decimal digits
+ call fetch_disp_out ;Prepare displays outputs
+ call show_display ;Show display output
+ ;Change selected display
+ ;incf disp_sel
  goto loop ;loop forever
 
 ;--------------------------------- Sub Rutinas ---------------------------------
@@ -2622,10 +2683,12 @@ display7_table:
  bsf TRISB, btnFrecDwn ;
  bsf TRISB, btnHz ;
  bsf TRISB, btnkHz ;
+ bsf TRISB, btnWave ;
  bsf WPUB, btnFrecUp ;Pull-up's on buttons
  bsf WPUB, btnFrecDwn ;
  bsf WPUB, btnHz ;
  bsf WPUB, btnkHz ;
+ bsf WPUB, btnWave ;
 
  bcf OPTION_REG, 7 ;Enable PortB Internal Pull-ups
     return
@@ -2655,6 +2718,7 @@ display7_table:
  bsf IOCB, btnFrecDwn ;
  bsf IOCB, btnHz ;
  bsf IOCB, btnkHz ;
+ bsf IOCB, btnWave ;
     return
 
     init_portNvars:
@@ -2668,12 +2732,29 @@ display7_table:
     return
 
     ;*****Funtion Generator*****
-    waveform_select:
- ;Add a calculator for selector Calculate
- bsf wave_ctrl, 0 ;square
- bcf wave_ctrl, 1 ;sawtooth
- bcf wave_ctrl, 2 ;triangle
+    waveform_select: ;wave_sel 00 - square, 01saw 10trian 11sine
+ btfsc wave_sel, 1
+ goto sel_triangle
+ btfsc wave_sel, 0
+ goto sel_sawtooth
+
+ sel_square:
  bcf wave_ctrl, 3 ;sine
+ bsf wave_ctrl, 0 ;square
+    return
+ sel_sawtooth:
+ bcf wave_ctrl, 0 ;square
+ bsf wave_ctrl, 1 ;sawtooth
+    return
+ sel_triangle:
+     btfsc wave_sel, 0
+     goto sel_sine
+ bcf wave_ctrl, 1 ;sawtooth
+ bsf wave_ctrl, 2 ;triangle
+    return
+ sel_sine:
+ bcf wave_ctrl, 2 ;triangle
+ bsf wave_ctrl, 3 ;sine
     return
 
     create_waveform:
@@ -2686,6 +2767,8 @@ display7_table:
  call sawtooth_wave
  btfsc wave_ctrl, 2
  call triangle_wave
+ btfsc wave_ctrl, 3
+ call sawtooth_wave
 
  bcf wave_ctrl, 4 ;Waveform step compleated
     return
@@ -2726,5 +2809,52 @@ display7_table:
  bsf wave_ctrl, 5 ;Start increase
     return
 
+    ;*****Frequency Display*****
+     get_digits:
+ bin_to_dec TMR0_n,freq_dig
+ bin_to_dec count_val,freq_dig+1
+ bin_to_dec count_val,freq_dig+2
+ bin_to_dec count_val,freq_dig+3
+    return
+
+    fetch_disp_out:
+ display7_decode freq_dig, disp_out ;Ones display
+ display7_decode freq_dig+1, disp_out+1 ;Tens display
+ display7_decode freq_dig+2, disp_out+2 ;Hundreds display
+ display7_decode freq_dig+3, disp_out+3 ;Thousands display
+    return
+
+    show_display:
+ btfsc disp_sel, 1
+ goto display_2
+ btfsc disp_sel, 0
+ goto display_1
+
+ display_0: ;Ones
+ bcf PORTD, disp3en ;Disable display 2
+ movf disp_out, W ;Load display 0 value
+ movwf PORTC ;to PortC
+ bsf PORTD, disp0en ;Enable display 0
+    return
+ display_1: ;Tens
+ bcf PORTD, disp0en ;Disable display 0
+ movf disp_out+1, W ;Load display 1 value
+ movwf PORTC ;to PortC
+ bsf PORTD, disp1en ;Enable display 1
+    return
+ display_2: ;Hundreds
+     btfsc disp_sel, 0
+     goto display_3
+ bcf PORTD, disp1en ;Disable display 1
+ movf disp_out+2, W ;Load display 1 value
+ movwf PORTC ;to PortC
+ bsf PORTD, disp2en ;Enable display 2
+    return
+ display_3: ;Thousands
+ bcf PORTD, disp2en ;Disable display 1
+ movf disp_out+3, W ;Load display 1 value
+ movwf PORTC ;to PortC
+ bsf PORTD, disp3en ;Enable display 2
+    return
 
     END
