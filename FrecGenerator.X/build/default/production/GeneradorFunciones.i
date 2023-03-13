@@ -2527,6 +2527,8 @@ btnFrecDwn EQU 2 ;Button decrease frequency
 btnHz EQU 4 ;Button set frequency to Hz
 btnkHz EQU 6 ;Button set frequency to kHz
 btnWave EQU 7 ;Button Change Waveform
+TMR0_n EQU 217 ;TMR0 value for display select update
+freq_step EQU 10 ;TMR1 inc/dec frequency step
 
 disp0en EQU 0 ;Display 0 enable ((EECON1) and 07Fh), 0 pin
 disp1en EQU 1 ;Display 1 enable ((EECON1) and 07Fh), 0 pin
@@ -2539,7 +2541,7 @@ PSECT udata_bank0 ;common memory
     wave_count: DS 1 ;Wave counter
     wave_sel: DS 1 ;Waveform Selector
     ;Frequency variables
-    TMR0_n: DS 1 ;TMR0 variable N value (frequency control)
+    TMR1_n: DS 2 ;TMR1 variable N value (frequency control)
     freq_dig: DS 4 ;Thousands (+3), Hundreads(+2), Tens(+1) & Ones(0) digits in binary
     disp_out: DS 4 ;Thousands (+3), Hundreads(+2), Tens(+1) & Ones(0) display output
     disp_sel: DS 1 ;Display selector (LSB only)
@@ -2569,9 +2571,11 @@ ORG 0004h ;posición para las interrupciones
  movwf STATUS_temp ;Save status to STATUS_temp
     isr: ;Interrupt Instructions (Interrupt Service Routine)
  btfsc ((INTCON) and 07Fh), 0
- call ioc_PortB
+ call portB_inter
  btfsc ((INTCON) and 07Fh), 2
- call T0IF_inter
+ call TMR0_inter
+ btfsc ((PIR1) and 07Fh), 0
+ call TMR1_inter
     pop: ;Restore State before interrupt
  swapf STATUS_temp,W ;Reverse Swap for status and save into W
  movwf STATUS ;Move W into STATUS register (Restore State)
@@ -2579,25 +2583,26 @@ ORG 0004h ;posición para las interrupciones
  swapf W_temp, W ;Reverse Swap for W_temp and place it into W
     retfie
 ;-------------------------- Subrutinas de Interrupcion -------------------------
-    ioc_PortB:
+    portB_inter:
  ;Verify which button triggered the interupt
  banksel PORTA
  btfsc PORTB, btnFrecUp
  goto $+4 ;Check next button
- movlw 5
- addwf TMR0_n, F
+ movlw freq_step
+ addwf TMR1_n+1, F
  goto reset_RBIF ;Skip following buttons
 
  btfsc PORTB, btnFrecDwn
  goto $+4 ;Check next button
- movlw 5
- subwf TMR0_n, F
+ movlw freq_step
+ subwf TMR1_n+1, F
  goto reset_RBIF ;Skip following buttons
 
  btfsc PORTB, btnWave
  goto $+5 ;Check next button
  incf wave_sel, F
- clrf PORTA ;Reset to avoid waveform flaws
+ clrf PORTA ;Reset output to avoid waveform flaws
+ clrf wave_count ;
  bsf wave_ctrl, 5 ;Start increase
  goto reset_RBIF ;Skip following buttons
 
@@ -2611,14 +2616,25 @@ ORG 0004h ;posición para las interrupciones
  bcf ((INTCON) and 07Fh), 0 ;Reset OIC flag
     return
 
-    T0IF_inter:
+    TMR0_inter:
  ;Reset TMR0
- movf TMR0_n, W ;reset TRM0 count
+ movlw TMR0_n ;Reset TRM0 count
  movwf TMR0
  bcf ((INTCON) and 07Fh), 2 ;Reset TMR0 overflow flag
- bsf wave_ctrl, 4 ;Next step of waveform
+ ;Change selected display
+ incf disp_sel, F
     return
 
+    TMR1_inter:
+ ;Reset TMR1
+ movf TMR1_n, W ;Reset TRM1 count
+ movwf TMR1L ;
+ movf TMR1_n+1, W ;
+ movwf TMR1H ;
+ bcf ((PIR1) and 07Fh), 0 ;Reset TMR1 overflow flag
+ ;Request waves next step
+ bsf wave_ctrl, 4
+    return
 ;------------------------------------ Tablas -----------------------------------
 PSECT code, delta=2, abs
 ORG 0100h ;posición para el código
@@ -2653,6 +2669,7 @@ display7_table:
  call config_TMR0 ;Configure TMR0
  call config_ie ;Configure Interrupt Enable
  call init_portNvars ;Initialize Ports and Variables
+ call config_TMR1 ;Configure TMR1
 
 ;-------------------------------- Loop Principal -------------------------------
     loop:
@@ -2662,12 +2679,12 @@ display7_table:
  call get_digits ;Get frequency's value in decimal digits
  call fetch_disp_out ;Prepare displays outputs
  call show_display ;Show display output
- ;Change selected display
- ;incf disp_sel
+
  goto loop ;loop forever
 
 ;--------------------------------- Sub Rutinas ---------------------------------
-    ;*****Set-Up Subroutines*****
+
+    ;*****Setup Subroutines*****
     config_io:
  banksel ANSEL
  clrf ANSEL ;PortA & PortE Digital
@@ -2693,28 +2710,42 @@ display7_table:
  bcf OPTION_REG, 7 ;Enable PortB Internal Pull-ups
     return
 
+    config_fosc:
+ bsf OSCCON, 6 ;Internal clock 2 MHz
+ bcf OSCCON, 5 ;
+ bsf OSCCON, 4 ;
+ bsf OSCCON, 0 ;Internal oscillator used for system clock
+    return
+
     config_TMR0:
- bsf OSCCON, 6 ;Internal clock 8 MHz
- bsf OSCCON, 5
- bsf OSCCON, 4
- bsf OSCCON, 0
-
+ ;TMR0 overflow set to 20ms (TMR0_n = 217)
  bcf OPTION_REG, 5 ;TMR0 internal instruction cycle source
- bcf OPTION_REG, 4 ;Low-to-High transition
  bcf OPTION_REG, 3 ;Prescaler assigned to TMR0 module
+ bsf OPTION_REG, 2 ;TMR0 prescaler 1:256
+ bsf OPTION_REG, 1 ;
+ bsf OPTION_REG, 0 ;
+    return
 
- bsf OPTION_REG, 2 ;TMR0 prescaler 1:64
- bcf OPTION_REG, 1
- bsf OPTION_REG, 0
+    config_TMR1:
+ ;TMR1 overflow time is variable
+ bsf T1CON, 5 ;TMR1 prescaler 1:8
+ bsf T1CON, 4 ;
+ bsf T1CON, 0 ;Enable TMR1
+
+ movlw 255
+ movwf TMR1_n+1
+ movlw 254
+ movwf TMR1_n
     return
 
     config_ie:
  bsf INTCON, 7 ;Enable Global Interrupt
-
+ bsf INTCON, 6 ;Enable Peripheral Interrupt
  bsf INTCON, 5 ;Enable TMR0 Overflow Interrupt
-
  bsf INTCON, 3 ;Enable PortB Interrupts
- bsf IOCB, btnFrecUp ;Enable Interrupt-on-Change
+
+ bsf PIE1, 0 ;Enable TMR1 Interrupt
+ bsf IOCB, btnFrecUp ;Enable Interrupt-on-Change on buttons
  bsf IOCB, btnFrecDwn ;
  bsf IOCB, btnHz ;
  bsf IOCB, btnkHz ;
@@ -2759,7 +2790,7 @@ display7_table:
 
     create_waveform:
  btfss wave_ctrl, 4 ;Waveform next step requested
- return ;Return if not requested
+    return ;Return if not requested
  ;Check selected waveform
  btfsc wave_ctrl, 0
  call square_wave
@@ -2781,7 +2812,7 @@ display7_table:
  goto $+4 ;Skip set
  movlw 255 ;Set to HIGH on first half
  movwf PORTA ;
- return
+    return
  clrf PORTA ;Reset to LOW on second half
     return
 
@@ -2797,24 +2828,24 @@ display7_table:
  btfsc STATUS, 2 ;Check Zero flag, if zero dont store inc and start decrease, no zero store
  goto $+3 ;Skip inc and start decrease
  movwf PORTA ;Store increment
- return
+    return
  bcf wave_ctrl, 5 ;Start decrease
- return
+    return
 
  decf PORTA
  btfsc STATUS, 2 ;Check Zero flag
  goto $+3
  decf PORTA ;dectement again
- return
+    return
  bsf wave_ctrl, 5 ;Start increase
     return
 
     ;*****Frequency Display*****
      get_digits:
- bin_to_dec TMR0_n,freq_dig
- bin_to_dec count_val,freq_dig+1
- bin_to_dec count_val,freq_dig+2
- bin_to_dec count_val,freq_dig+3
+ bin_to_dec TMR1H,freq_dig ;Ones digit
+ bin_to_dec count_val,freq_dig+1 ;Tens digit
+ bin_to_dec count_val,freq_dig+2 ;Hundreads digit
+ bin_to_dec count_val,freq_dig+3 ;Thousands digit
     return
 
     fetch_disp_out:
@@ -2829,7 +2860,6 @@ display7_table:
  goto display_2
  btfsc disp_sel, 0
  goto display_1
-
  display_0: ;Ones
  bcf PORTD, disp3en ;Disable display 2
  movf disp_out, W ;Load display 0 value
