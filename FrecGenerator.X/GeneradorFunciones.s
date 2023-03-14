@@ -142,9 +142,11 @@ ORG 0004h    ;posición para las interrupciones
     
     TMR1_inter:
 	;Reset TMR1
-	movf	TMR1_n, W  ;Reset TRM1 count
+	;movf	TMR1_n, W  ;Reset TRM1 count
+	movlw	00101100B
 	movwf	TMR1L	    ;
-	movf	TMR1_n+1, W ;
+	;movf	TMR1_n+1, W ;
+	movlw	11111100B
 	movwf	TMR1H	    ;
 	bcf	TMR1IF	;Reset TMR1 overflow flag
 	;Request waves next step
@@ -168,15 +170,270 @@ display7_table:
     retlw   00000111B   ;7
     retlw   01111111B   ;8
     retlw   01101111B   ;9
-    retlw   01110111B   ;A
-    retlw   01111100B   ;B
-    retlw   00111001B   ;C
-    retlw   01011110B   ;D
-    retlw   01111001B   ;E
-    retlw   01110001B   ;F
-    retlw   01110110B   ;X "Offset > 15"
 	   ;_gfedcba segments
+
+ORG 01FFh
 	   
+sinewave_table:
+    addwf   PCL,    f	;Offset
+    retlw   128     ;0 rad
+    retlw   131     ;0.024 rad
+    retlw   134     ;0.049 rad
+    retlw   137     ;0.073 rad
+    retlw   141     ;0.098 rad
+    retlw   144     ;0.123 rad
+    retlw   147     ;0.147 rad
+    retlw   150     ;0.172 rad
+    retlw   153     ;0.197 rad
+    retlw   156     ;0.221 rad
+    retlw   159     ;0.246 rad
+    retlw   162     ;0.271 rad
+    retlw   165     ;0.295 rad
+    retlw   168     ;0.320 rad
+    retlw   171     ;0.344 rad
+    retlw   174     ;0.369 rad
+    retlw   177     ;0.394 rad
+    retlw   180     ;0.418 rad
+    retlw   183     ;0.443 rad
+    retlw   186     ;0.468 rad
+    retlw   188     ;0.492 rad
+    retlw   191     ;0.517 rad
+    retlw   194     ;0.542 rad
+    retlw   196     ;0.566 rad
+    retlw   199     ;0.591 rad
+    retlw   202     ;0.615 rad
+    retlw   204     ;0.640 rad
+    retlw   207     ;0.665 rad
+    retlw   209     ;0.689 rad
+    retlw   212     ;0.714 rad
+    retlw   214     ;0.739 rad
+    retlw   216     ;0.763 rad
+    retlw   218     ;0.788 rad
+    retlw   221     ;0.813 rad
+    retlw   223     ;0.837 rad
+    retlw   225     ;0.862 rad
+    retlw   227     ;0.887 rad
+    retlw   229     ;0.911 rad
+    retlw   231     ;0.936 rad
+    retlw   233     ;0.960 rad
+    retlw   234     ;0.985 rad
+    retlw   236     ;1.010 rad
+    retlw   238     ;1.034 rad
+    retlw   239     ;1.059 rad
+    retlw   241     ;1.084 rad
+    retlw   242     ;1.108 rad
+    retlw   243     ;1.133 rad
+    retlw   245     ;1.158 rad
+    retlw   246     ;1.182 rad
+    retlw   247     ;1.207 rad
+    retlw   248     ;1.231 rad
+    retlw   249     ;1.256 rad
+    retlw   250     ;1.281 rad
+    retlw   251     ;1.305 rad
+    retlw   252     ;1.330 rad
+    retlw   253     ;1.355 rad
+    retlw   253     ;1.379 rad
+    retlw   254     ;1.404 rad
+    retlw   254     ;1.429 rad
+    retlw   255     ;1.453 rad
+    retlw   255     ;1.478 rad
+    retlw   255     ;1.503 rad
+    retlw   255     ;1.527 rad
+    retlw   255     ;1.552 rad
+    retlw   255     ;1.576 rad
+    retlw   255     ;1.601 rad
+    retlw   255     ;1.626 rad
+    retlw   255     ;1.650 rad
+    retlw   255     ;1.675 rad
+    retlw   254     ;1.700 rad
+    retlw   254     ;1.724 rad
+    retlw   253     ;1.749 rad
+    retlw   253     ;1.774 rad
+    retlw   252     ;1.798 rad
+    retlw   251     ;1.823 rad
+    retlw   251     ;1.847 rad
+    retlw   250     ;1.872 rad
+    retlw   249     ;1.897 rad
+    retlw   248     ;1.921 rad
+    retlw   247     ;1.946 rad
+    retlw   245     ;1.971 rad
+    retlw   244     ;1.995 rad
+    retlw   243     ;2.020 rad
+    retlw   241     ;2.045 rad
+    retlw   240     ;2.069 rad
+    retlw   238     ;2.094 rad
+    retlw   237     ;2.119 rad
+    retlw   235     ;2.143 rad
+    retlw   233     ;2.168 rad
+    retlw   232     ;2.192 rad
+    retlw   230     ;2.217 rad
+    retlw   228     ;2.242 rad
+    retlw   226     ;2.266 rad
+    retlw   224     ;2.291 rad
+    retlw   222     ;2.316 rad
+    retlw   220     ;2.340 rad
+    retlw   217     ;2.365 rad
+    retlw   215     ;2.390 rad
+    retlw   213     ;2.414 rad
+    retlw   210     ;2.439 rad
+    retlw   208     ;2.463 rad
+    retlw   205     ;2.488 rad
+    retlw   203     ;2.513 rad
+    retlw   200     ;2.537 rad
+    retlw   198     ;2.562 rad
+    retlw   195     ;2.587 rad
+    retlw   192     ;2.611 rad
+    retlw   190     ;2.636 rad
+    retlw   187     ;2.661 rad
+    retlw   184     ;2.685 rad
+    retlw   181     ;2.710 rad
+    retlw   178     ;2.735 rad
+    retlw   176     ;2.759 rad
+    retlw   173     ;2.784 rad
+    retlw   170     ;2.808 rad
+    retlw   167     ;2.833 rad
+    retlw   164     ;2.858 rad
+    retlw   161     ;2.882 rad
+    retlw   158     ;2.907 rad
+    retlw   155     ;2.932 rad
+    retlw   151     ;2.956 rad
+    retlw   148     ;2.981 rad
+    retlw   145     ;3.006 rad
+    retlw   142     ;3.030 rad
+    retlw   139     ;3.055 rad
+    retlw   136     ;3.079 rad
+    retlw   133     ;3.104 rad
+    retlw   130     ;3.129 rad
+    retlw   126     ;3.153 rad
+    retlw   123     ;3.178 rad
+    retlw   120     ;3.203 rad
+    retlw   117     ;3.227 rad
+    retlw   114     ;3.252 rad
+    retlw   111     ;3.277 rad
+    retlw   108     ;3.301 rad
+    retlw   105     ;3.326 rad
+    retlw   101     ;3.351 rad
+    retlw   98      ;3.375 rad
+    retlw   95      ;3.400 rad
+    retlw   92      ;3.424 rad
+    retlw   89      ;3.449 rad
+    retlw   86      ;3.474 rad
+    retlw   83      ;3.498 rad
+    retlw   80      ;3.523 rad
+    retlw   78      ;3.548 rad
+    retlw   75      ;3.572 rad
+    retlw   72      ;3.597 rad
+    retlw   69      ;3.622 rad
+    retlw   66      ;3.646 rad
+    retlw   64      ;3.671 rad
+    retlw   61      ;3.695 rad
+    retlw   58      ;3.720 rad
+    retlw   56      ;3.745 rad
+    retlw   53      ;3.769 rad
+    retlw   51      ;3.794 rad
+    retlw   48      ;3.819 rad
+    retlw   46      ;3.843 rad
+    retlw   43      ;3.868 rad
+    retlw   41      ;3.893 rad
+    retlw   39      ;3.917 rad
+    retlw   36      ;3.942 rad
+    retlw   34      ;3.967 rad
+    retlw   32      ;3.991 rad
+    retlw   30      ;4.016 rad
+    retlw   28      ;4.040 rad
+    retlw   26      ;4.065 rad
+    retlw   24      ;4.090 rad
+    retlw   23      ;4.114 rad
+    retlw   21      ;4.139 rad
+    retlw   19      ;4.164 rad
+    retlw   18      ;4.188 rad
+    retlw   16      ;4.213 rad
+    retlw   15      ;4.238 rad
+    retlw   13      ;4.262 rad
+    retlw   12      ;4.287 rad
+    retlw   11      ;4.311 rad
+    retlw   9       ;4.336 rad
+    retlw   8       ;4.361 rad
+    retlw   7       ;4.385 rad
+    retlw   6       ;4.410 rad
+    retlw   5       ;4.435 rad
+    retlw   5       ;4.459 rad
+    retlw   4       ;4.484 rad
+    retlw   3       ;4.509 rad
+    retlw   3       ;4.533 rad
+    retlw   2       ;4.558 rad
+    retlw   2       ;4.583 rad
+    retlw   1       ;4.607 rad
+    retlw   1       ;4.632 rad
+    retlw   1       ;4.656 rad
+    retlw   1       ;4.681 rad
+    retlw   1       ;4.706 rad
+    retlw   1       ;4.730 rad
+    retlw   1       ;4.755 rad
+    retlw   1       ;4.780 rad
+    retlw   1       ;4.804 rad
+    retlw   1       ;4.829 rad
+    retlw   2       ;4.854 rad
+    retlw   2       ;4.878 rad
+    retlw   3       ;4.903 rad
+    retlw   3       ;4.927 rad
+    retlw   4       ;4.952 rad
+    retlw   5       ;4.977 rad
+    retlw   6       ;5.001 rad
+    retlw   7       ;5.026 rad
+    retlw   8       ;5.051 rad
+    retlw   9       ;5.075 rad
+    retlw   10      ;5.100 rad
+    retlw   11      ;5.125 rad
+    retlw   13      ;5.149 rad
+    retlw   14      ;5.174 rad
+    retlw   15      ;5.199 rad
+    retlw   17      ;5.223 rad
+    retlw   18      ;5.248 rad
+    retlw   20      ;5.272 rad
+    retlw   22      ;5.297 rad
+    retlw   23      ;5.322 rad
+    retlw   25      ;5.346 rad
+    retlw   27      ;5.371 rad
+    retlw   29      ;5.396 rad
+    retlw   31      ;5.420 rad
+    retlw   33      ;5.445 rad
+    retlw   35      ;5.470 rad
+    retlw   38      ;5.494 rad
+    retlw   40      ;5.519 rad
+    retlw   42      ;5.543 rad
+    retlw   44      ;5.568 rad
+    retlw   47      ;5.593 rad
+    retlw   49      ;5.617 rad
+    retlw   52      ;5.642 rad
+    retlw   54      ;5.667 rad
+    retlw   57      ;5.691 rad
+    retlw   60      ;5.716 rad
+    retlw   62      ;5.741 rad
+    retlw   65      ;5.765 rad
+    retlw   68      ;5.790 rad
+    retlw   70      ;5.815 rad
+    retlw   73      ;5.839 rad
+    retlw   76      ;5.864 rad
+    retlw   79      ;5.888 rad
+    retlw   82      ;5.913 rad
+    retlw   85      ;5.938 rad
+    retlw   88      ;5.962 rad
+    retlw   91      ;5.987 rad
+    retlw   94      ;6.012 rad
+    retlw   97      ;6.036 rad
+    retlw   100     ;6.061 rad
+    retlw   103     ;6.086 rad
+    retlw   106     ;6.110 rad
+    retlw   109     ;6.135 rad
+    retlw   112     ;6.159 rad
+    retlw   115     ;6.184 rad
+    retlw   119     ;6.209 rad
+    retlw   122     ;6.233 rad
+    retlw   125     ;6.258 rad
+    retlw   128     ;6.283 rad
+
+
 ;------------------------------- Configuración uC ------------------------------
 
     main:
@@ -314,7 +571,7 @@ display7_table:
 	btfsc	wave_ctrl,  2
 	call	triangle_wave
 	btfsc	wave_ctrl,  3
-	call	sawtooth_wave
+	call	sine_wave
 	
 	bcf	wave_ctrl, 4	;Waveform step compleated
     return
@@ -353,6 +610,15 @@ display7_table:
 	decf	PORTA	;dectement again
     return
 	bsf	wave_ctrl,  5	;Start increase
+    return
+    
+    sine_wave:    
+	clrf    PCLATH	    ;Prepare Table's position
+	bsf	PCLATH, 1   ;0200h
+	movf	wave_count, W
+	call    sinewave_table	;Returns voltage code DAC
+	movwf   PORTA	
+	incf	wave_count, F	;Next index
     return
     
     ;*****Frequency Display*****    
