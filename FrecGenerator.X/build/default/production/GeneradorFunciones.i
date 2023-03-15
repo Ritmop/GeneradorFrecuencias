@@ -2527,7 +2527,7 @@ btnFrecDwn EQU 2 ;Button decrease frequency
 btnHz EQU 4 ;Button set frequency to Hz
 btnkHz EQU 6 ;Button set frequency to kHz
 btnWave EQU 7 ;Button Change Waveform
-TMR0_n EQU 217 ;TMR0 value for display select update
+TMR0_n EQU 61 ;TMR0 value for display select update
 freq_step EQU 10 ;TMR1 inc/dec frequency step
 
 disp0en EQU 0 ;Display 0 enable ((EECON1) and 07Fh), 0 pin
@@ -2599,12 +2599,11 @@ ORG 0004h ;posición para las interrupciones
  goto reset_RBIF ;Skip following buttons
 
  btfsc PORTB, btnWave
- goto $+7 ;Check next button
+ goto $+6 ;Check next button
  incf wave_sel, F
  clrf PORTA ;Reset output to avoid waveform flaws
  clrf wave_count ;
  bsf wave_ctrl, 5 ;Start increase
- incf PORTE, F
  goto reset_RBIF ;Skip following buttons
 
  ;btfss PORTB, btnHz
@@ -2943,9 +2942,6 @@ sinewave_table:
  call get_digits ;Get frequency's value in decimal digits
  call fetch_disp_out ;Prepare displays outputs
  call show_display ;Show display output
-
- btfss PORTB, btnWave
- incf PORTE
 
  goto loop ;loop forever
 
