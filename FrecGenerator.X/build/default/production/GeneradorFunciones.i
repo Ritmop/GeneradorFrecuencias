@@ -2527,7 +2527,7 @@ btnFrecDwn EQU 2 ;Button decrease frequency
 btnHz EQU 4 ;Button set frequency to Hz
 btnkHz EQU 6 ;Button set frequency to kHz
 btnWave EQU 7 ;Button Change Waveform
-TMR0_n EQU 61 ;TMR0 value for display select update
+TMR0_n EQU 217 ;TMR0 value for display select update
 freq_step EQU 10 ;TMR1 inc/dec frequency step
 
 disp0en EQU 0 ;Display 0 enable ((EECON1) and 07Fh), 0 pin
@@ -2570,6 +2570,8 @@ ORG 0004h ;posición para las interrupciones
  swapf STATUS, W ;Swap status to be saved into W
  movwf STATUS_temp ;Save status to STATUS_temp
     isr: ;Interrupt Instructions (Interrupt Service Routine)
+ btfsc ((INTCON) and 07Fh), 0
+ call portB_inter
  btfsc ((INTCON) and 07Fh), 2
  call TMR0_inter
  btfsc ((PIR1) and 07Fh), 0
@@ -2581,6 +2583,39 @@ ORG 0004h ;posición para las interrupciones
  swapf W_temp, W ;Reverse Swap for W_temp and place it into W
     retfie
 ;-------------------------- Subrutinas de Interrupcion -------------------------
+    portB_inter:
+ ;Verify which button triggered the interupt
+ banksel PORTA
+ btfsc PORTB, btnFrecUp
+ goto $+4 ;Check next button
+ movlw freq_step
+ addwf TMR1_n+1, F
+ goto reset_RBIF ;Skip following buttons
+
+ btfsc PORTB, btnFrecDwn
+ goto $+4 ;Check next button
+ movlw freq_step
+ subwf TMR1_n+1, F
+ goto reset_RBIF ;Skip following buttons
+
+ btfsc PORTB, btnWave
+ goto $+7 ;Check next button
+ incf wave_sel, F
+ clrf PORTA ;Reset output to avoid waveform flaws
+ clrf wave_count ;
+ bsf wave_ctrl, 5 ;Start increase
+ incf PORTE, F
+ goto reset_RBIF ;Skip following buttons
+
+ ;btfss PORTB, btnHz
+ ;decf PORTA
+
+ ;btfss PORTB, btnkHz
+ ;decf PORTA
+
+ reset_RBIF:
+ bcf ((INTCON) and 07Fh), 0 ;Reset OIC flag
+    return
 
     TMR0_inter:
  ;Reset TMR0
@@ -2902,15 +2937,15 @@ sinewave_table:
 
 ;-------------------------------- Loop Principal -------------------------------
     loop:
- btfsc ((INTCON) and 07Fh), 0
- call portB_change ;Check buttons state
-
  call waveform_select
  call create_waveform
 
  call get_digits ;Get frequency's value in decimal digits
  call fetch_disp_out ;Prepare displays outputs
  call show_display ;Show display output
+
+ btfss PORTB, btnWave
+ incf PORTE
 
  goto loop ;loop forever
 
@@ -2944,13 +2979,13 @@ sinewave_table:
 
     config_fosc:
  bsf OSCCON, 6 ;Internal clock 8 MHz
- bcf OSCCON, 5 ;
+ bsf OSCCON, 5 ;
  bsf OSCCON, 4 ;
  bsf OSCCON, 0 ;Internal oscillator used for system clock
     return
 
     config_TMR0:
- ;TMR0 overflow set to 25ms (TMR0_n = 61)
+ ;TMR0 overflow set to 20ms (TMR0_n = 217)
  bcf OPTION_REG, 5 ;TMR0 internal instruction cycle source
  bcf OPTION_REG, 3 ;Prescaler assigned to TMR0 module
  bsf OPTION_REG, 2 ;TMR0 prescaler 1:256
@@ -2974,14 +3009,14 @@ sinewave_table:
  bsf INTCON, 7 ;Enable Global Interrupt
  bsf INTCON, 6 ;Enable Peripheral Interrupt
  bsf INTCON, 5 ;Enable TMR0 Overflow Interrupt
- ;bsf INTCON, 3 ;Enable PortB Interrupts
+ bsf INTCON, 3 ;Enable PortB Interrupts
 
  bsf PIE1, 0 ;Enable TMR1 Interrupt
- ;bsf IOCB, btnFrecUp ;Enable Interrupt-on-Change on buttons
- ;bsf IOCB, btnFrecDwn ;
- ;bsf IOCB, btnHz ;
- ;bsf IOCB, btnkHz ;
- ;bsf IOCB, btnWave ;
+ bsf IOCB, btnFrecUp ;Enable Interrupt-on-Change on buttons
+ bsf IOCB, btnFrecDwn ;
+ bsf IOCB, btnHz ;
+ bsf IOCB, btnkHz ;
+ bsf IOCB, btnWave ;
     return
 
     init_portNvars:
@@ -3082,39 +3117,6 @@ sinewave_table:
  call sinewave_table ;Returns voltage code DAC
  movwf PORTA
  incf wave_count, F ;Next index
-    return
-
-    portB_change:
- inc_frec:
- btfsc PORTB, btnFrecUp
- goto dec_frec ;Check next button
- movlw freq_step
- addwf TMR1_n+1, F
- goto reset_RBIF ;Skip following buttons
- dec_frec:
- btfsc PORTB, btnFrecDwn
- goto change_wave ;Check next button
- movlw freq_step
- subwf TMR1_n+1, F
- goto reset_RBIF ;Skip following buttons
- change_wave:
- btfsc PORTB, btnWave
- goto $+7 ;Check next button
- incf wave_sel, F
- clrf PORTA ;Reset output to avoid waveform flaws
- clrf wave_count ;
- bsf wave_ctrl, 5 ;Start increase
- incf PORTE, F
- goto reset_RBIF ;Skip following buttons
-
- ;btfss PORTB, btnHz
- ;decf PORTA
-
- ;btfss PORTB, btnkHz
- ;decf PORTA
-
- reset_RBIF:
- bcf ((INTCON) and 07Fh), 0 ;Reset OIC flag
     return
 
     ;*****Frequency Display*****

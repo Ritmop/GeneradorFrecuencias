@@ -32,7 +32,15 @@
      <ITEM name="nItems">0</ITEM>
     </PROPERTIES>
    </POPUP>
+<<<<<<< HEAD
+<<<<<<< HEAD
    <POPUP w="695" x="625" flags="00008001" y="286" h="453" pid="0" iid="1">
+=======
+   <POPUP w="695" x="622" flags="00008001" y="255" h="453" pid="0" iid="1">
+>>>>>>> parent of a58e8e6 (Sine wave)
+=======
+   <POPUP w="695" x="622" flags="00008001" y="255" h="453" pid="0" iid="1">
+>>>>>>> parent of a58e8e6 (Sine wave)
     <PROPERTIES/>
    </POPUP>
    <POPUP w="380" x="94" flags="00000009" y="146" h="182" pid="3" iid="9">
