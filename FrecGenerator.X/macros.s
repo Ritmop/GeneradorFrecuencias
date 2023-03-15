@@ -34,3 +34,10 @@ display7_decode macro	binary,	decode
    call    display7_table	;Returns binary code for 7 segment display
    movwf   decode
 endm
+   
+portC_mutiplex	macro   enPrev, output, enNext
+    bcf	    PORTD,  enPrev  ;Disable previous device
+    movf    output, W	    ;Load output value
+    movwf   PORTC	    ;to PortC
+    bsf	    PORTD,  enNext  ;Enable next device
+endm

@@ -37,7 +37,7 @@ __Ludata_bank3 0 0 ABS 0
 udata_shr 70 71 COMMON 70 1
 udata_bank0 20 31 BANK0 20 1
 %locals
-build/default/production/GeneradorFunciones.o
+build/default/debug/GeneradorFunciones.o
 GeneradorFunciones.s
 153 0 0 CODE 0
 156 100 0 CODE 0

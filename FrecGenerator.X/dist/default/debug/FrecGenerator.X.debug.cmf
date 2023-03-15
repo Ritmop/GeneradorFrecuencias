@@ -11,7 +11,7 @@
 # All addresses and the length are given in unqualified hexadecimal
 # in delta units.  Any other numeric values are decimal.
 %PSECTS
-$build/default/production/GeneradorFunciones.o
+$build/default/debug/GeneradorFunciones.o
 resVect CODE 0 0 0 3 2 1
 code CODE 0 0 0 410 2 1
 intVect CODE 0 0 0 31 2 1
@@ -53,7 +53,7 @@ STRING 410-1FFF 2
 # are in ascending order of addresses.
 # All other numeric values are in decimal.
 %LINETAB
-$build/default/production/GeneradorFunciones.o
+$build/default/debug/GeneradorFunciones.o
 0 intVect CODE >81:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 4 intVect CODE >84:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
 5 intVect CODE >85:C:\Users\judah\Desktop\Proyectos Varios\Programacion de uC\Proyecto 1\GeneradorFrecuencias\FrecGenerator.X\GeneradorFunciones.s
