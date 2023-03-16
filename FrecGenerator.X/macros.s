@@ -41,3 +41,12 @@ portC_mutiplex	macro   enPrev, output, enNext
     movwf   PORTC	    ;to PortC
     bsf	    PORTD,  enNext  ;Enable next device
 endm
+    
+get_nibbles  macro   hexa, high_nibble, low_nibble
+  movf	hexa, W
+  andlw	0x0F
+  movwf	low_nibble
+  swapf	hexa, W
+  andlw	0x0F
+  movwf	high_nibble
+endm

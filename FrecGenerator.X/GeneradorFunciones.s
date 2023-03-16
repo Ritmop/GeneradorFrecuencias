@@ -57,6 +57,7 @@ PSECT udata_bank0 ;common memory
     ;Frequency variables
     freq_i:	DS  1	;Frequency table's index
     TMR1_n:	DS  2	;TMR1 variable N value (frequency control)
+    freq_nybl:	DS  2	;Left(+1), Right(0) frequency decimal pairs
     freq_dig:	DS  4	;Thousands (+3), Hundreads(+2), Tens(+1) & Ones(0) digits in binary
     disp_out:	DS  4	;Thousands (+3), Hundreads(+2), Tens(+1) & Ones(0) display output
     disp_sel:	DS  1	;Display selector (LSB only)
@@ -309,7 +310,7 @@ TMR1L_freqCtrl:	;TMR1 Low Byte for frequency control
     retlw   0xFF     ;8000 Hz
     
 ORG 01FFh	   
-sinewave_table:	;Map counters value to sine wave voltage
+sinewave_table:	;Map counters value to sine wave voltage 0300
     addwf   PCL, f  ;Offset
     retlw   0     ;4.712 rad
     retlw   1     ;4.737 rad
@@ -568,6 +569,149 @@ sinewave_table:	;Map counters value to sine wave voltage
     retlw   1     ;10.97 rad
     retlw   0     ;10.99 rad
 
+freq_leftDigits:
+    addwf   PCL, f  ;Offset
+    retlw   0x00    ;0001 Hz
+    retlw   0x00    ;0002 Hz
+    retlw   0x00    ;0003 Hz
+    retlw   0x00    ;0004 Hz
+    retlw   0x00    ;0005 Hz
+    retlw   0x00    ;0006 Hz
+    retlw   0x00    ;0007 Hz
+    retlw   0x00    ;0008 Hz
+    retlw   0x00    ;0009 Hz
+    retlw   0x00    ;0010 Hz
+    retlw   0x00    ;0015 Hz
+    retlw   0x00    ;0020 Hz
+    retlw   0x00    ;0025 Hz
+    retlw   0x00    ;0030 Hz
+    retlw   0x00    ;0035 Hz
+    retlw   0x00    ;0040 Hz
+    retlw   0x00    ;0045 Hz
+    retlw   0x00    ;0050 Hz
+    retlw   0x00    ;0055 Hz
+    retlw   0x00    ;0060 Hz
+    retlw   0x00    ;0065 Hz
+    retlw   0x00    ;0070 Hz
+    retlw   0x00    ;0075 Hz
+    retlw   0x00    ;0080 Hz
+    retlw   0x00    ;0085 Hz
+    retlw   0x00    ;0090 Hz
+    retlw   0x00    ;0095 Hz
+    retlw   0x01    ;0100 Hz
+    retlw   0x01    ;0110 Hz
+    retlw   0x01    ;0120 Hz
+    retlw   0x01    ;0130 Hz
+    retlw   0x01    ;0140 Hz
+    retlw   0x01    ;0150 Hz
+    retlw   0x01    ;0160 Hz
+    retlw   0x01    ;0170 Hz
+    retlw   0x01    ;0180 Hz
+    retlw   0x01    ;0190 Hz
+    retlw   0x02    ;0200 Hz
+    retlw   0x02    ;0210 Hz
+    retlw   0x02    ;0220 Hz
+    retlw   0x02    ;0230 Hz
+    retlw   0x02    ;0240 Hz
+    retlw   0x02    ;0250 Hz
+    retlw   0x02    ;0275 Hz
+    retlw   0x03    ;0300 Hz
+    retlw   0x03    ;0325 Hz
+    retlw   0x03    ;0350 Hz
+    retlw   0x03    ;0375 Hz
+    retlw   0x04    ;0400 Hz
+    retlw   0x04    ;0425 Hz
+    retlw   0x04    ;0450 Hz
+    retlw   0x04    ;0475 Hz
+    retlw   0x05    ;0500 Hz
+    retlw   0x05    ;0550 Hz
+    retlw   0x06    ;0600 Hz
+    retlw   0x06    ;0650 Hz
+    retlw   0x07    ;0700 Hz
+    retlw   0x07    ;0750 Hz
+    retlw   0x08    ;0800 Hz
+    retlw   0x09    ;0900 Hz
+    retlw   0x10    ;1000 Hz
+    retlw   0x12    ;1200 Hz
+    retlw   0x14    ;1400 Hz
+    retlw   0x16    ;1600 Hz
+    retlw   0x20    ;2000 Hz
+    retlw   0x27    ;2700 Hz
+    retlw   0x40    ;4000 Hz
+    retlw   0x80    ;8000 Hz
+return
+    
+freq_rightDigits:
+    addwf   PCL, f  ;Offset
+    retlw   0x01    ;0001 Hz
+    retlw   0x02    ;0002 Hz
+    retlw   0x03    ;0003 Hz
+    retlw   0x04    ;0004 Hz
+    retlw   0x05    ;0005 Hz
+    retlw   0x06    ;0006 Hz
+    retlw   0x07    ;0007 Hz
+    retlw   0x08    ;0008 Hz
+    retlw   0x09    ;0009 Hz
+    retlw   0x10    ;0010 Hz
+    retlw   0x15    ;0015 Hz
+    retlw   0x20    ;0020 Hz
+    retlw   0x25    ;0025 Hz
+    retlw   0x30    ;0030 Hz
+    retlw   0x35    ;0035 Hz
+    retlw   0x40    ;0040 Hz
+    retlw   0x45    ;0045 Hz
+    retlw   0x50    ;0050 Hz
+    retlw   0x55    ;0055 Hz
+    retlw   0x60    ;0060 Hz
+    retlw   0x65    ;0065 Hz
+    retlw   0x70    ;0070 Hz
+    retlw   0x75    ;0075 Hz
+    retlw   0x80    ;0080 Hz
+    retlw   0x85    ;0085 Hz
+    retlw   0x90    ;0090 Hz
+    retlw   0x95    ;0095 Hz
+    retlw   0x00    ;0100 Hz
+    retlw   0x10    ;0110 Hz
+    retlw   0x20    ;0120 Hz
+    retlw   0x30    ;0130 Hz
+    retlw   0x40    ;0140 Hz
+    retlw   0x50    ;0150 Hz
+    retlw   0x60    ;0160 Hz
+    retlw   0x70    ;0170 Hz
+    retlw   0x80    ;0180 Hz
+    retlw   0x90    ;0190 Hz
+    retlw   0x00    ;0200 Hz
+    retlw   0x10    ;0210 Hz
+    retlw   0x20    ;0220 Hz
+    retlw   0x30    ;0230 Hz
+    retlw   0x40    ;0240 Hz
+    retlw   0x50    ;0250 Hz
+    retlw   0x75    ;0275 Hz
+    retlw   0x00    ;0300 Hz
+    retlw   0x25    ;0325 Hz
+    retlw   0x50    ;0350 Hz
+    retlw   0x75    ;0375 Hz
+    retlw   0x00    ;0400 Hz
+    retlw   0x25    ;0425 Hz
+    retlw   0x50    ;0450 Hz
+    retlw   0x75    ;0475 Hz
+    retlw   0x00    ;0500 Hz
+    retlw   0x50    ;0550 Hz
+    retlw   0x00    ;0600 Hz
+    retlw   0x50    ;0650 Hz
+    retlw   0x00    ;0700 Hz
+    retlw   0x50    ;0750 Hz
+    retlw   0x00    ;0800 Hz
+    retlw   0x00    ;0900 Hz
+    retlw   0x00    ;1000 Hz
+    retlw   0x00    ;1200 Hz
+    retlw   0x00    ;1400 Hz
+    retlw   0x00    ;1600 Hz
+    retlw   0x00    ;2000 Hz
+    retlw   0x00    ;2700 Hz
+    retlw   0x00    ;4000 Hz
+    retlw   0x00    ;8000 Hz
+return
 ;------------------------------- Configuración uC ------------------------------
 
     main:
@@ -669,7 +813,7 @@ sinewave_table:	;Map counters value to sine wave voltage
 	clrf	wave_ctrl
 	clrf	wave_count
 	clrf	wave_sel
-	movlw	56
+	movlw	0
 	movwf	freq_i
 	clrw
 	bsf	wave_ctrl,  5	;Start increase
@@ -784,10 +928,19 @@ sinewave_table:	;Map counters value to sine wave voltage
     return
     
      decimal_conv:
-	bin_to_dec  freq_i,freq_dig	 ;Ones digit
-	bin_to_dec  count_val,freq_dig+1 ;Tens digit
-	bin_to_dec  count_val,freq_dig+2 ;Hundreads digit
-	bin_to_dec  count_val,freq_dig+3 ;Thousands digit
+	clrf    PCLATH	    ;Prepare PCL offset to
+	bsf	PCLATH, 0   ;0300h
+	bsf	PCLATH, 1   ;
+	;Look up frequency digits
+	movf	freq_i,	W
+	call	freq_rightDigits
+	movwf	freq_nybl
+	movf	freq_i, W
+	call	freq_leftDigits
+	movwf	freq_nybl+1
+	;Separate nibbles into individual registers
+	get_nibbles  freq_nybl+1, freq_dig+3, freq_dig+2
+	get_nibbles  freq_nybl,	  freq_dig+1, freq_dig
     return
     
     fetch_disp_out:    
