@@ -2555,6 +2555,7 @@ PSECT udata_bank0 ;common memory
     wave_ctrl: DS 1 ;Waveform controler
     wave_count: DS 1 ;Wave counter
     wave_sel: DS 1 ;Waveform Selector
+    step_size: DS 1 ;Wave increase/decrease step
     ;Frequency variables
     freq_i: DS 1 ;Frequency table's index
     TMR1_n: DS 2 ;TMR1 variable N value (frequency control)
@@ -3314,10 +3315,13 @@ return
  clrf wave_ctrl
  clrf wave_count
  clrf wave_sel
+
  movlw 0
- movwf freq_i
+ movwf freq_i ;Initialize at 1Hz wave frequency
+ movlw 15
+ movwf step_size ;Initialize at 1 step increasing
  clrw
- bsf wave_ctrl, 5 ;Start increase
+ bsf wave_ctrl, 5 ;Start rising edge
     return
 
     ;*****Funtion Generator*****
@@ -3363,39 +3367,76 @@ return
     return
 
     square_wave:
- incf wave_count, F
+ ;incf wave_count, F
+ ;movf wave_count, W
+ ;sublw 128 ;Compare counter at half period
+ ;btfsc STATUS, 0 ;Check ~Borrow flag
+ ;goto $+4 ;Skip set
+ ;movlw 255 ;Set to HIGH on first half
+ ;movwf PORTA ;
+    ;return
+ ;clrf PORTA ;Reset to LOW on second half
+    ;return
+ movf step_size, W
+ addwf wave_count, F
  movf wave_count, W
- sublw 128 ;Compare counter at half period
+ sublw 127 ;Compare counter at half of wave period
  btfsc STATUS, 0 ;Check ~Borrow flag
  goto $+4 ;Skip set
- movlw 255 ;Set to HIGH on first half
+ movlw 255 ;Set to HIGH on first half of wave period
  movwf PORTA ;
     return
- clrf PORTA ;Reset to LOW on second half
+ clrf PORTA ;Reset to LOW on first half of wave period
     return
 
     sawtooth_wave:
- incf PORTA
+ ;incf PORTA
+ movf step_size, W
+ addwf PORTA, F
     return
 
     triangle_wave:
  btfss wave_ctrl, 5 ;Check increase
  goto neg_slope
  pos_slope:
- incf PORTA
- incf PORTA, W
- btfsc STATUS, 2 ;Check Zero flag, if zero dont store inc and start decrease, no zero store
- goto $+3 ;Skip inc and start decrease
- movwf PORTA ;Store increment
+ ;incf PORTA
+ ;incf PORTA, W
+ ;btfsc STATUS, 2 ;Check Zero flag, if zero dont store inc and start decrease, no zero store
+ ;goto $+3 ;Skip inc and start decrease
+ ;movwf PORTA ;Store increment
+ movf step_size, W
+ addwf PORTA, W
+ btfsc STATUS, 0 ;Check Carry flag
+ goto set_to_dec
+ movwf PORTA ;Store if no carry
+ ;Repeat
+ movf step_size, W
+ addwf PORTA, W
+ btfsc STATUS, 0 ;Check Carry flag
+ goto set_to_dec
+ movwf PORTA ;Store if no carry
     return
+ set_to_dec:
  bcf wave_ctrl, 5 ;Start decrease
     return
  neg_slope:
- decf PORTA
- btfsc STATUS, 2 ;Check Zero flag
- goto $+3
- decf PORTA ;dectement again
+ ;decf PORTA
+ ;btfsc STATUS, 2 ;Check Zero flag
+ ;goto $+3
+ ;decf PORTA ;dectement again
+ movf step_size, W
+ subwf PORTA, W
+ btfss STATUS, 0 ;Check ~Borrow flag
+ goto set_to_inc
+ movwf PORTA ;Store if no borrow
+ ;Repeat
+ movf step_size, W
+ subwf PORTA, W
+ btfss STATUS, 0 ;Check ~Borrow flag
+ goto set_to_inc
+ movwf PORTA ;Store if no borrow
     return
+ set_to_inc:
  bsf wave_ctrl, 5 ;Start increase
     return
 
@@ -3405,7 +3446,9 @@ return
  movf wave_count, W
  call sinewave_table ;Returns mapped voltage for DAC
  movwf PORTA
- incf wave_count, F ;Next index
+ movf step_size, W
+ addwf wave_count,F ;Next index
+ ;incf wave_count, F ;Next index
     return
 
     ;*****Frequency Display*****
