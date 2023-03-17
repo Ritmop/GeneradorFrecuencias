@@ -11,13 +11,13 @@
   0h - 5h		(dist/default/production\FrecGenerator.X.production.hex)
   8h - 61h		(dist/default/production\FrecGenerator.X.production.hex)
   200h - 329h		(dist/default/production\FrecGenerator.X.production.hex)
-  3FEh - 8F1h		(dist/default/production\FrecGenerator.X.production.hex)
+  3FEh - 8D1h		(dist/default/production\FrecGenerator.X.production.hex)
   400Eh - 4011h		(dist/default/production\FrecGenerator.X.production.hex)
  Unused ranges:
   6h - 7h
   62h - 1FFh
   32Ah - 3FDh
-  8F2h - 400Dh
+  8D2h - 400Dh
 
 ### Hex Memory Map ###
  Legend:
@@ -132,9 +132,7 @@
 000008A0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 000008B0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 000008C0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-000008D0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-000008E0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-000008F0 | H1 H1 -- -- -- -- -- -- -- -- -- -- -- -- -- --
+000008D0 | H1 H1 -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ----------------------------------------------------------
 00004000 | -- -- -- -- -- -- -- -- -- -- -- -- -- -- H1 H1
 00004010 | H1 H1 -- -- -- -- -- -- -- -- -- -- -- -- -- --
