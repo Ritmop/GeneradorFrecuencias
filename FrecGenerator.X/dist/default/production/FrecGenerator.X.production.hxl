@@ -9,15 +9,15 @@
 ### Memory Usage ###
  Intel Hex-file ranges:
   0h - 5h		(dist/default/production\FrecGenerator.X.production.hex)
-  8h - 61h		(dist/default/production\FrecGenerator.X.production.hex)
+  8h - 7Dh		(dist/default/production\FrecGenerator.X.production.hex)
   200h - 329h		(dist/default/production\FrecGenerator.X.production.hex)
-  3FEh - 8F1h		(dist/default/production\FrecGenerator.X.production.hex)
+  3FEh - 90Bh		(dist/default/production\FrecGenerator.X.production.hex)
   400Eh - 4011h		(dist/default/production\FrecGenerator.X.production.hex)
  Unused ranges:
   6h - 7h
-  62h - 1FFh
+  7Eh - 1FFh
   32Ah - 3FDh
-  8F2h - 400Dh
+  90Ch - 400Dh
 
 ### Hex Memory Map ###
  Legend:
@@ -32,7 +32,8 @@
 00000030 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00000040 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00000050 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000060 | H1 H1 -- -- -- -- -- -- -- -- -- -- -- -- -- --
+00000060 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000070 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 -- --
 ----------------------------------------------------------
 00000200 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00000210 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
@@ -134,7 +135,8 @@
 000008C0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 000008D0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 000008E0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-000008F0 | H1 H1 -- -- -- -- -- -- -- -- -- -- -- -- -- --
+000008F0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000900 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 -- -- -- --
 ----------------------------------------------------------
 00004000 | -- -- -- -- -- -- -- -- -- -- -- -- -- -- H1 H1
 00004010 | H1 H1 -- -- -- -- -- -- -- -- -- -- -- -- -- --

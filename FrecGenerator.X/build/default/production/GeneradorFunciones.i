@@ -2543,7 +2543,7 @@ btnFrecDwn EQU 2 ;Button decrease frequency
 btnHz EQU 4 ;Button set frequency to Hz
 btnkHz EQU 6 ;Button set frequency to kHz
 btnWave EQU 7 ;Button Change Waveform
-TMR0_n EQU 61 ;TMR0 value for display select update
+TMR0_n EQU 217 ;TMR0 value for display select update
 
 disp0en EQU 0 ;Display 0 enable ((EECON1) and 07Fh), 0 pin
 disp1en EQU 1 ;Display 1 enable ((EECON1) and 07Fh), 0 pin
@@ -2564,9 +2564,11 @@ PSECT udata_bank0 ;common memory
     disp_out: DS 4 ;Thousands (+3), Hundreads(+2), Tens(+1) & Ones(0) display output
     disp_sel: DS 1 ;Display selector (LSB only)
     ;Macros variables
-    count_val: DS 1 ;Store counters value
-    mod10: DS 1 ;Module 10 for binary to decimal convertion
-    rotations: DS 1 ;Rotations counter for binary to decimal convertion
+    ;count_val: DS 1 ;Store counters value
+    ;mod10: DS 1 ;Module 10 for binary to decimal convertion
+    ;rotations: DS 1 ;Rotations counter for binary to decimal convertion
+    cont_big: DS 1 ;
+    cont_small: DS 1 ;
 
 PSECT udata_shr ;common memory
     W_temp: DS 1 ;Temporary W
@@ -2588,6 +2590,7 @@ ORG 0004h ;posición para las interrupciones
  swapf STATUS, W ;Swap status to be saved into W
  movwf STATUS_temp ;Save status to STATUS_temp
     isr: ;Interrupt Instructions (Interrupt Service Routine)
+ banksel PORTA
  btfsc ((INTCON) and 07Fh), 0
  call portB_inter
  btfsc ((INTCON) and 07Fh), 2
@@ -2602,8 +2605,8 @@ ORG 0004h ;posición para las interrupciones
     retfie
 ;-------------------------- Subrutinas de Interrupcion -------------------------
     portB_inter:
+ call delay_big
  ;Verify which button triggered the interupt
- banksel PORTA
  btfsc PORTB, btnFrecUp
  goto $+3 ;Check next button
  incf freq_i, F ;Increment tables index
@@ -2622,11 +2625,20 @@ ORG 0004h ;posición para las interrupciones
  bsf wave_ctrl, 5;Start increase
  goto reset_RBIF ;Skip following buttons
 
- ;btfss PORTB, btnHz
- ;decf PORTA
+ btfsc PORTB, btnHz
+ goto $+6 ;Check next button
+ movlw 1
+ movwf step_size
+ bcf PORTE, 1
+ bsf PORTE, 0
+ goto reset_RBIF ;Skip following buttons
 
- ;btfss PORTB, btnkHz
- ;decf PORTA
+ btfsc PORTB, btnkHz
+ goto $+5 ;Check next button
+ movlw 5
+ movwf step_size
+ bcf PORTE, 0
+ bsf PORTE, 1
 
  reset_RBIF:
  bcf ((INTCON) and 07Fh), 0 ;Reset OIC flag
@@ -3215,7 +3227,6 @@ freq_rightDigits:
     retlw 0x00 ;8000 Hz
 return
 ;------------------------------- Configuración uC ------------------------------
-
     main:
  call config_io ;Configure Inputs/Outputs
  call config_TMR0 ;Configure TMR0
@@ -3272,7 +3283,7 @@ return
     return
 
     config_TMR0:
- ;TMR0 overflow set to 20ms (TMR0_n = 217)
+ ;TMR0 overflow set to 20ms (TMR0_n = 100)
  bcf OPTION_REG, 5 ;TMR0 internal instruction cycle source
  bcf OPTION_REG, 3 ;Prescaler assigned to TMR0 module
  bsf OPTION_REG, 2 ;TMR0 prescaler 1:256
@@ -3322,6 +3333,8 @@ return
  movwf step_size ;Initialize at 1 step increasing
  clrw
  bsf wave_ctrl, 5 ;Start rising edge
+ bcf PORTE, 1
+ bsf PORTE, 0
     return
 
     ;*****Funtion Generator*****
@@ -3516,4 +3529,18 @@ return
  portC_mutiplex disp2en, disp_out+3, disp3en
     return
 
+    delay_big:
+ movlw 198 ;valor inicial del contador
+ movwf cont_big
+ call delay_small ;rutina de delay
+ decfsz cont_big, 1 ;decrementar el contador
+ goto $-2 ;ejecutar dos líneas atrás
+ return
+
+    delay_small:
+ movlw 165 ;valor inicial del contador
+ movwf cont_small
+ decfsz cont_small, 1 ;decrementar el contador
+ goto $-1 ;ejecutar línea anterior
+ return
     END
