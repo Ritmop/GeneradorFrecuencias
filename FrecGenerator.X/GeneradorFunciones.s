@@ -125,20 +125,24 @@ ORG 0004h    ;posición para las interrupciones
 	goto	reset_RBIF  ;Skip following buttons
 	
 	btfsc	PORTB,	btnHz
-	goto	$+6	    ;Check next button
+	goto	$+8	    ;Check next button
 	movlw	1
 	movwf	step_size
-	bcf	PORTE,	1
-	bsf	PORTE,	0
+	bsf	wave_ctrl, 6
+	bcf	PORTE,	0
+	bsf	PORTE,	1
+	bcf	PORTE,	2
 	goto	reset_RBIF  ;Skip following buttons
 	
 	btfsc	PORTB,	btnkHz
-	goto	$+5	    ;Check next button
-	movlw	5
+	goto	$+7	    ;Check next button
+	movlw	20
 	movwf	step_size
+	bcf	wave_ctrl, 6
 	bcf	PORTE,	0
 	bsf	PORTE,	1
-	
+	bsf	PORTE,	2
+	;goto	reset_RBIF
 	reset_RBIF:
 	bcf	RBIF	;Reset OIC flag
     return
@@ -235,21 +239,39 @@ TMR1H_freqCtrl:	;TMR1 High Byte for frequency control
     retlw   0xFF     ;450 Hz
     retlw   0xFF     ;475 Hz
     retlw   0xFF     ;500 Hz
-    retlw   0xFF     ;550 Hz
-    retlw   0xFF     ;600 Hz
-    retlw   0xFF     ;650 Hz
-    retlw   0xFF     ;700 Hz
-    retlw   0xFF     ;750 Hz
-    retlw   0xFF     ;800 Hz
-    retlw   0xFF     ;900 Hz
-    retlw   0xFF     ;1000 Hz
-    retlw   0xFF     ;1200 Hz
-    retlw   0xFF     ;1400 Hz
-    retlw   0xFF     ;1600 Hz
-    retlw   0xFF     ;2000 Hz
-    retlw   0xFF     ;2700 Hz
-    retlw   0xFF     ;4000 Hz
-    retlw   0xFF     ;8000 Hz
+    retlw   0xFE     ;0.55 kHz
+    retlw   0xFE     ;0.60 kHz
+    retlw   0xFF     ;0.65 kHz
+    retlw   0xFF     ;0.70 kHz
+    retlw   0xFF     ;0.75 kHz
+    retlw   0xFF     ;0.80 kHz
+    retlw   0xFF     ;0.85 kHz
+    retlw   0xFF     ;0.90 kHz
+    retlw   0xFF     ;0.95 kHz
+    retlw   0xFF     ;1.00 kHz
+    retlw   0xFF     ;1.20 kHz
+    retlw   0xFF     ;1.40 kHz
+    retlw   0xFF     ;1.60 kHz
+    retlw   0xFF     ;1.80 kHz
+    retlw   0xFF     ;2.00 kHz
+    retlw   0xFF     ;2.25 kHz
+    retlw   0xFF     ;2.50 kHz
+    retlw   0xFF     ;2.75 kHz
+    retlw   0xFF     ;3.00 kHz
+    retlw   0xFF     ;3.50 kHz
+    retlw   0xFF     ;4.00 kHz
+    retlw   0xFF     ;4.50 kHz
+    retlw   0xFF     ;5.00 kHz
+    retlw   0xFF     ;5.50 kHz
+    retlw   0xFF     ;6.00 kHz
+    retlw   0xFF     ;6.50 kHz
+    retlw   0xFF     ;7.00 kHz
+    retlw   0xFF     ;7.50 kHz
+    retlw   0xFF     ;8.00 kHz
+    retlw   0xFF     ;9.00 kHz
+    retlw   0xFF     ;10.00 kHz
+    retlw   0xFF     ;15.00 kHz
+    retlw   0xFF     ;20.00 kHz
     
 TMR1L_freqCtrl:	;TMR1 Low Byte for frequency control
     addwf   PCL, f   ;Offset
@@ -306,21 +328,39 @@ TMR1L_freqCtrl:	;TMR1 Low Byte for frequency control
     retlw   0xEE     ;450 Hz
     retlw   0xEF     ;475 Hz
     retlw   0xF0     ;500 Hz
-    retlw   0xF1     ;550 Hz
-    retlw   0xF2     ;600 Hz
-    retlw   0xF3     ;650 Hz
-    retlw   0xF4     ;700 Hz
-    retlw   0xF5     ;750 Hz
-    retlw   0xF6     ;800 Hz
-    retlw   0xF7     ;900 Hz
-    retlw   0xF8     ;1000 Hz
-    retlw   0xF9     ;1200 Hz
-    retlw   0xFA     ;1400 Hz
-    retlw   0xFB     ;1600 Hz
-    retlw   0xFC     ;2000 Hz
-    retlw   0xFD     ;2700 Hz
-    retlw   0xFE     ;4000 Hz
-    retlw   0xFF     ;8000 Hz
+    retlw   0xE2     ;0.55 kHz
+    retlw   0xFA     ;0.60 kHz
+    retlw   0x0E     ;0.65 kHz
+    retlw   0x1F     ;0.70 kHz
+    retlw   0x2E     ;0.75 kHz
+    retlw   0x3B     ;0.80 kHz
+    retlw   0x47     ;0.85 kHz
+    retlw   0x51     ;0.90 kHz
+    retlw   0x5A     ;0.95 kHz
+    retlw   0x63     ;1.00 kHz
+    retlw   0x7D     ;1.20 kHz
+    retlw   0x8F     ;1.40 kHz
+    retlw   0x9D     ;1.60 kHz
+    retlw   0xA8     ;1.80 kHz
+    retlw   0xB1     ;2.00 kHz
+    retlw   0xBA     ;2.25 kHz
+    retlw   0xC1     ;2.50 kHz
+    retlw   0xC6     ;2.75 kHz
+    retlw   0xCB     ;3.00 kHz
+    retlw   0xD3     ;3.50 kHz
+    retlw   0xD8     ;4.00 kHz
+    retlw   0xDD     ;4.50 kHz
+    retlw   0xE0     ;5.00 kHz
+    retlw   0xE3     ;5.50 kHz
+    retlw   0xE5     ;6.00 kHz
+    retlw   0xE7     ;6.50 kHz
+    retlw   0xE9     ;7.00 kHz
+    retlw   0xEB     ;7.50 kHz
+    retlw   0xEC     ;8.00 kHz
+    retlw   0xEE     ;9.00 kHz
+    retlw   0xF0     ;10.00 kHz
+    retlw   0xF5     ;15.00 kHz
+    retlw   0xF8     ;20.00 kHz
     
 ORG 01FFh	   
 sinewave_table:	;Map counters value to sine wave voltage 0300
@@ -582,6 +622,7 @@ sinewave_table:	;Map counters value to sine wave voltage 0300
     retlw   1     ;10.97 rad
     retlw   0     ;10.99 rad
 
+;0300h
 freq_leftDigits:
     addwf   PCL, f  ;Offset
     retlw   0x00    ;0001 Hz
@@ -637,22 +678,39 @@ freq_leftDigits:
     retlw   0x04    ;0450 Hz
     retlw   0x04    ;0475 Hz
     retlw   0x05    ;0500 Hz
-    retlw   0x05    ;0550 Hz
-    retlw   0x06    ;0600 Hz
-    retlw   0x06    ;0650 Hz
-    retlw   0x07    ;0700 Hz
-    retlw   0x07    ;0750 Hz
-    retlw   0x08    ;0800 Hz
-    retlw   0x09    ;0900 Hz
-    retlw   0x10    ;1000 Hz
-    retlw   0x12    ;1200 Hz
-    retlw   0x14    ;1400 Hz
-    retlw   0x16    ;1600 Hz
-    retlw   0x20    ;2000 Hz
-    retlw   0x27    ;2700 Hz
-    retlw   0x40    ;4000 Hz
-    retlw   0x80    ;8000 Hz
-return
+    retlw   0x00    ;00.55 kHz
+    retlw   0x00    ;00.60 kHz
+    retlw   0x00    ;00.65 kHz
+    retlw   0x00    ;00.70 kHz
+    retlw   0x00    ;00.75 kHz
+    retlw   0x00    ;00.80 kHz
+    retlw   0x00    ;00.85 kHz
+    retlw   0x00    ;00.90 kHz
+    retlw   0x00    ;00.95 kHz
+    retlw   0x01    ;01.00 kHz
+    retlw   0x01    ;01.20 kHz
+    retlw   0x01    ;01.40 kHz
+    retlw   0x01    ;01.60 kHz
+    retlw   0x01    ;01.80 kHz
+    retlw   0x02    ;02.00 kHz
+    retlw   0x02    ;02.25 kHz
+    retlw   0x02    ;02.50 kHz
+    retlw   0x02    ;02.75 kHz
+    retlw   0x03    ;03.00 kHz
+    retlw   0x03    ;03.50 kHz
+    retlw   0x04    ;04.00 kHz
+    retlw   0x04    ;04.50 kHz
+    retlw   0x05    ;05.00 kHz
+    retlw   0x05    ;05.50 kHz
+    retlw   0x06    ;06.00 kHz
+    retlw   0x06    ;06.50 kHz
+    retlw   0x07    ;07.00 kHz
+    retlw   0x07    ;07.50 kHz
+    retlw   0x08    ;08.00 kHz
+    retlw   0x09    ;09.00 kHz
+    retlw   0x10    ;10.00 kHz
+    retlw   0x15    ;15.00 kHz
+    retlw   0x20    ;20.00 kHz
     
 freq_rightDigits:
     addwf   PCL, f  ;Offset
@@ -709,22 +767,40 @@ freq_rightDigits:
     retlw   0x50    ;0450 Hz
     retlw   0x75    ;0475 Hz
     retlw   0x00    ;0500 Hz
-    retlw   0x50    ;0550 Hz
-    retlw   0x00    ;0600 Hz
-    retlw   0x50    ;0650 Hz
-    retlw   0x00    ;0700 Hz
-    retlw   0x50    ;0750 Hz
-    retlw   0x00    ;0800 Hz
-    retlw   0x00    ;0900 Hz
-    retlw   0x00    ;1000 Hz
-    retlw   0x00    ;1200 Hz
-    retlw   0x00    ;1400 Hz
-    retlw   0x00    ;1600 Hz
-    retlw   0x00    ;2000 Hz
-    retlw   0x00    ;2700 Hz
-    retlw   0x00    ;4000 Hz
-    retlw   0x00    ;8000 Hz
-return
+    retlw   0x55    ;00.55 kHz
+    retlw   0x60    ;00.60 kHz
+    retlw   0x65    ;00.65 kHz
+    retlw   0x70    ;00.70 kHz
+    retlw   0x75    ;00.75 kHz
+    retlw   0x80    ;00.80 kHz
+    retlw   0x85    ;00.85 kHz
+    retlw   0x90    ;00.90 kHz
+    retlw   0x95    ;00.95 kHz
+    retlw   0x00    ;01.00 kHz
+    retlw   0x20    ;01.20 kHz
+    retlw   0x40    ;01.40 kHz
+    retlw   0x60    ;01.60 kHz
+    retlw   0x80    ;01.80 kHz
+    retlw   0x00    ;02.00 kHz
+    retlw   0x25    ;02.25 kHz
+    retlw   0x50    ;02.50 kHz
+    retlw   0x75    ;02.75 kHz
+    retlw   0x00    ;03.00 kHz
+    retlw   0x50    ;03.50 kHz
+    retlw   0x00    ;04.00 kHz
+    retlw   0x50    ;04.50 kHz
+    retlw   0x00    ;05.00 kHz
+    retlw   0x50    ;05.50 kHz
+    retlw   0x00    ;06.00 kHz
+    retlw   0x50    ;06.50 kHz
+    retlw   0x00    ;07.00 kHz
+    retlw   0x50    ;07.50 kHz
+    retlw   0x00    ;08.00 kHz
+    retlw   0x00    ;09.00 kHz
+    retlw   0x00    ;10.00 kHz
+    retlw   0x00    ;15.00 kHz
+    retlw   0x00    ;20.00 kHz
+    
 ;------------------------------- Configuración uC ------------------------------
     main:
 	call	config_io	;Configure Inputs/Outputs
@@ -739,6 +815,7 @@ return
 	call	waveform_select	;Check selected waveform
 	call	create_waveform	;Next step in wave formation
 	
+	call	restr_freq	;Restrict frequency at table borders
 	call	map_freq	;Map frequency to TMR1 values
 	call	decimal_conv	;Get frequency's value in decimal digits
 	call	fetch_disp_out	;Prepare displays outputs
@@ -831,7 +908,8 @@ return
 	movlw	1
 	movwf	step_size    ;Initialize at 1 step increasing 
 	clrw
-	bsf	wave_ctrl,  5	;Start rising edge
+	bsf	wave_ctrl,  5	;Start at rising edge
+	bsf	wave_ctrl,  6	;Start at Hz multiplier
 	bcf	PORTE,	1
 	bsf	PORTE,	0
     return
@@ -963,14 +1041,41 @@ return
 	;incf	wave_count, F	;Next index
     return
     
-    ;*****Frequency Display***** 
-    map_freq:	    
-	;Restric table's index
-	movf	freq_i, W
-	sublw	67
-	btfss	STATUS, 0   ;Check ~Borrow flag
-	clrf	freq_i	    ;Reset index
-	
+    ;*****Frequency Display*****
+ 
+    restr_freq:	
+	btfss	wave_ctrl, 6 ;Check Hz/kHz multiplier
+	goto	restr_kHz
+	restr_Hz:
+	;Underflow
+	btfsc	freq_i, 7
+	clrf	freq_i
+	;Overflow
+	movf	freq_i,	W
+	sublw	52
+	btfsc	STATUS, 0   ;Check ~borrow flag
+	goto	$+3
+	movlw	52
+	movwf	freq_i	
+    return    
+	restr_kHz:
+	;Underflow
+	movf	freq_i,	W
+	sublw	53
+	btfss	STATUS, 0   ;Check ~borrow flag
+	goto	$+3
+	movlw	53
+	movwf	freq_i	
+	;Overflow
+	movf	freq_i,	W
+	sublw	83
+	btfsc	STATUS, 0   ;Check ~borrow flag
+	goto	$+3
+	movlw	83
+	movwf	freq_i
+    return
+    
+    map_freq:	
 	clrf    PCLATH	    ;Prepare PCL offset to
 	bsf	PCLATH, 0   ;0100h
 	;Map Low byte
