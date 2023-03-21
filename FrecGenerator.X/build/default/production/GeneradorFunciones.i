@@ -2543,7 +2543,7 @@ btnFrecDwn EQU 2 ;Button decrease frequency
 btnHz EQU 4 ;Button set frequency to Hz
 btnkHz EQU 6 ;Button set frequency to kHz
 btnWave EQU 7 ;Button Change Waveform
-TMR0_n EQU 217 ;TMR0 value for display select update
+TMR0_n EQU 150 ;TMR0 value for display select update
 
 disp0en EQU 0 ;Display 0 enable ((EECON1) and 07Fh), 0 pin
 disp1en EQU 1 ;Display 1 enable ((EECON1) and 07Fh), 0 pin
@@ -2605,7 +2605,7 @@ ORG 0004h ;posición para las interrupciones
     retfie
 ;-------------------------- Subrutinas de Interrupcion -------------------------
     portB_inter:
- call delay_big
+ call delay_100ms
  ;Verify which button triggered the interupt
  btfsc PORTB, btnFrecUp
  goto $+3 ;Check next button
@@ -2630,8 +2630,8 @@ ORG 0004h ;posición para las interrupciones
  movlw 1
  movwf step_size
  bsf wave_ctrl, 6
- bcf PORTE, 0
- bsf PORTE, 1
+ bsf PORTE, 0
+ bcf PORTE, 1
  bcf PORTE, 2
  goto reset_RBIF ;Skip following buttons
 
@@ -3634,7 +3634,7 @@ freq_rightDigits:
  portC_mutiplex disp2en, disp_out+3, disp3en
     return
 
-    delay_big:
+    delay_100ms:
  movlw 198 ;valor inicial del contador
  movwf cont_big
  call delay_small ;rutina de delay
